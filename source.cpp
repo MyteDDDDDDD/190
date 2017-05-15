@@ -1,13 +1,11 @@
 #include <iostream>
-#include<stack>
-#include<cstring>
 #include<string>
+#include<stack>
 using namespace std;
-stack<string> s;
-string op;
-string r[50];
-int sum = 0;
-
+int t;
+stack<char>s;
+char r[50];
+int sum;
 int checkP(char c) {
 	if (c == '(' || c == ')')
 		return 1;
@@ -16,78 +14,83 @@ int checkP(char c) {
 	else
 		return 3;
 }
-
-int checkCurrentOp(string c) {
-	if (c == "(") {
+void checkOp(char c) {
+	if (c == '(') {
 		s.push(c);
 	}
-	else if (c == ")") {
-		while (s.top() != "("&&!s.empty()) {
-			if (s.top() != "(") {
-				r[sum] = s.top();
-				sum++;
-			}
+	else if (c == ')') {
+		char temp = s.top();
+		while (temp != '(') {
+			r[sum] = s.top();
+			sum++;
 			s.pop();
+			temp = s.top();
 		}
+		s.pop();
 	}
-	else if (c == "*" || c == "/" || c == "+" || c == "-") {
-		op = s.top();
-		int p1 = checkP(op);
-		int p2= checkP(c);
-		if (p1 < p2||s.empty()) {
+	else if (c == '*' || c == '/' || c == '+' || c == '-') {
+		if (s.empty()) {
 			s.push(c);
 		}
 		else {
-			r[sum] = s.top();
-			sum++;
-			s.pop();
-			checkCurrentOp(c);
+			int p1 = checkP(s.top());
+			int p2 = checkP(c);
+			if (p2 > p1) {
+				s.push(c); 
+			}
+			else {
+				r[sum] = s.top();
+				sum++;
+				s.pop();
+				checkOp(c);
+			}
 		}
-
-	}
-	else if (c == '\n') {
-		while (!s.empty()) {
-			r[sum] = s.top();
-			sum++;
-			s.pop();
-		}
-		if (s.empty()) {
-			return 0;
-		}
-			
 	}
 	else {
 		r[sum] = c;
 		sum++;
 	}
 		
+
 }
-
 void intToPost() {
-	string c;
-	getline(cin, c);
-	cin >> c;
-	while (!cin.eof()) {
-		checkCurrentOp(c);
-		
-
-		cin >> c;
+	string temp;
+	char c;
+	memset(r, 0, sizeof(r));
+	sum = 0;
+	getline(cin, temp);
+	if (temp.length() == 1) {
+		c = temp[0];
 	}
+	while (c != '\n') {
+		checkOp(c);
+		getline(cin, temp);
+		if (temp.length() == 1) {
+			c = temp[0];
+		}
+		else
+			break;
+	}
+	
+	while (!s.empty()) {
+		r[sum] = s.top();
+		sum++;
+		s.pop();
+	}
+	for (int i = 0; i < sum; i++) {
+		cout << r[i];
+	}
+	cout << endl;
+	
 }
 int main() {
-	int t;
 	cin >> t;
+	string te;
+	getline(cin, te);
 	
 	for (int i = 0; i < t; i++) {
-		memset(r, 0, sizeof(r));
-		sum = 0;
-		op = NULL;
-		for (int j = 0; j < sum; j++) {
-			cout << r[j];
-		}
-		cout << endl;
+		getline(cin, te);
 		intToPost();
 	}
-
 	return 0;
 }
