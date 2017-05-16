@@ -1,11 +1,14 @@
 #include <iostream>
 #include<string>
 #include<stack>
+#include<cstring>
+#include<vector>
 using namespace std;
 int t;
 stack<char>s;
 char r[50];
 int sum;
+vector<string> a;
 int checkP(char c) {
 	if (c == '(' || c == ')')
 		return 1;
@@ -36,7 +39,7 @@ void checkOp(char c) {
 			int p1 = checkP(s.top());
 			int p2 = checkP(c);
 			if (p2 > p1) {
-				s.push(c); 
+				s.push(c);
 			}
 			else {
 				r[sum] = s.top();
@@ -50,7 +53,7 @@ void checkOp(char c) {
 		r[sum] = c;
 		sum++;
 	}
-		
+
 
 }
 void intToPost() {
@@ -71,7 +74,7 @@ void intToPost() {
 		else
 			break;
 	}
-	
+
 	while (!s.empty()) {
 		r[sum] = s.top();
 		sum++;
@@ -81,16 +84,18 @@ void intToPost() {
 		cout << r[i];
 	}
 	cout << endl;
-	
+
 }
 int main() {
 	cin >> t;
+	
 	string te;
 	getline(cin, te);
-	
+	getline(cin, te);
 	for (int i = 0; i < t; i++) {
-		getline(cin, te);
 		intToPost();
+		if (i < t - 1)
+			cout << endl;
 	}
 	return 0;
 }
